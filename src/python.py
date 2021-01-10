@@ -33,5 +33,6 @@ def main(text):
 
 
 if __name__ == '__main__':
-	with open(r"../test/example.py") as f:
+	file = input("File path: ")
+	with open(file) as f:
 		print(main(f.read()))
