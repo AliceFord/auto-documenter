@@ -12,6 +12,16 @@ prevDistToStation = 1
 def main(startTimer=True):
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
+	
+	
+	
+	
+	
+	
 	global prevDistToStation
 	screenshot = pyautogui.screenshot()
 	image = screenshot
@@ -114,13 +124,33 @@ def main(startTimer=True):
 def getCurrentSpeed(image):  # Returns 0-10, indicating speed.
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
+	
+	
+	
+	
+	
+	
 
 	X = 922
 	SECTIONS = [983, 990, 1000, 1010, 1020, 1030, 1040, 1050, 1060, 1070]  # 983 - 1070
 
 	def isGreen(rgb):
-	"""
-	"""
+		"""
+		"""
+		"""
+		"""
+		"""
+		"""
+	
+	
+	
+	
+	
+	
 		return 165 < rgb[1] < 185 and 75 < rgb[2] < 95
 
 	for i in range(10):
@@ -132,6 +162,16 @@ def getCurrentSpeed(image):  # Returns 0-10, indicating speed.
 def redLight(emergency):
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
+	
+	
+	
+	
+	
+	
 	pydirectinput.keyDown("s")
 
 	if emergency:
@@ -145,12 +185,20 @@ def redLight(emergency):
 def nearToStationIncrease():
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
 	pydirectinput.keyDown("w")
 	time.sleep(1)
 	pydirectinput.keyUp("w")
 
 
 def yellowLight():
+	"""
+	"""
+	"""
+	"""
 	"""
 	"""
 	pydirectinput.keyDown("s")
@@ -161,12 +209,20 @@ def yellowLight():
 def yellowLightIncrease():
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
 	pydirectinput.keyDown("w")
 	time.sleep(1)
 	pydirectinput.keyUp("w")
 
 
 def greenLight():
+	"""
+	"""
+	"""
+	"""
 	"""
 	"""
 	pydirectinput.keyDown("w")
@@ -177,6 +233,16 @@ def greenLight():
 def getAllLights(image):
 	"""
 	"""
+	"""
+	"""
+	"""
+	"""
+	
+	
+	
+	
+	
+	
 	X = 1310
 	Y1 = 996
 	Y2 = 1016
@@ -187,4 +253,10 @@ def getAllLights(image):
 
 if __name__ == "__main__":
 	main()
+
+
+
+
+
+
 

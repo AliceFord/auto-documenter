@@ -111,17 +111,26 @@ class MainWindow(QMainWindow):
 				finalText += line + "\n"
 				if index+1 == functions[funcCounter][0]:
 					listOfItems = self.docks[funcCounter].widget().layout()
-					finalText += "\t\"\"\"\n"
-					finalText += ("\t" + listOfItems.itemAt(0).getData()[1] + "\n") if listOfItems.itemAt(0).getData()[1] != "" else ""
+
+					for i in range(len(listOfItems)):
+						if listOfItems.itemAt(i).getData()[1] != "":
+							break
+					else:
+						continue
+
+					numberOfTabs = line.count('\t') + 1
+					tabs = lambda numberOfTabs=numberOfTabs: ''.join(['\t' for _ in range(numberOfTabs)])
+					finalText += tabs() + "\"\"\"\n"
+					finalText += (tabs() + listOfItems.itemAt(0).getData()[1] + "\n") if listOfItems.itemAt(0).getData()[1] != "" else ""
 					i = 1
 					while(i < len(listOfItems)-2):
-						finalText += ("\t:param " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
+						finalText += (tabs() + ":param " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
 						i+=1
-						finalText += ("\t:type " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
+						finalText += (tabs() + ":type " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
 						i+=1
-					finalText += ("\t:return:" + listOfItems.itemAt(len(listOfItems)-2).getData()[1] + "\n") if listOfItems.itemAt(len(listOfItems)-2).getData()[1] != "" else ""
-					finalText += ("\t:rtype:" + listOfItems.itemAt(len(listOfItems)-1).getData()[1] + "\n") if listOfItems.itemAt(len(listOfItems)-1).getData()[1] != "" else ""
-					finalText += "\t\"\"\"\n"
+					finalText += (tabs() + ":return:" + listOfItems.itemAt(len(listOfItems)-2).getData()[1] + "\n") if listOfItems.itemAt(len(listOfItems)-2).getData()[1] != "" else ""
+					finalText += (tabs() + ":rtype:" + listOfItems.itemAt(len(listOfItems)-1).getData()[1] + "\n") if listOfItems.itemAt(len(listOfItems)-1).getData()[1] != "" else ""
+					finalText += tabs() + "\"\"\"\n"
 					funcCounter += 1
 
 		with open(self.filename, "w") as f:
