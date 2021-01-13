@@ -26,6 +26,9 @@ class CustomInputBox(QHBoxLayout):
 	def getData(self):
 		return [self.labelText, self.lineEdit.text()]
 
+	def setLineEditValue(self, text):
+		self.lineEdit.setText(text)
+
 
 class MainWindow(QMainWindow):
 	def __init__(self, *args, **kwargs):
@@ -63,14 +66,17 @@ class MainWindow(QMainWindow):
 			mainDescription = CustomInputBox("Main Description:", "Main Description")
 			dockLayout.addLayout(mainDescription)
 
+			paramBoxes = []
 			for param in self.getParameters(function[2]):
 				if param[0] == ' ':
 					param = param[1:]
 				paramUse = CustomInputBox(f"Parameter \'{param}\' Use:", "Use")
 				dockLayout.addLayout(paramUse)
+				paramBoxes.append(paramUse)
 
 				paramType = CustomInputBox(f"Parameter \'{param}\' Type:", "Type")
 				dockLayout.addLayout(paramType)
+				paramBoxes.append(paramType)
 
 			returns = CustomInputBox("Function Returns:", "Returns")
 			dockLayout.addLayout(returns)
@@ -85,6 +91,24 @@ class MainWindow(QMainWindow):
 			self.docks.append(dock)
 			self.addDockWidget(Qt.RightDockWidgetArea, dock)
 			button = QPushButton(function[1])
+
+			for key, value in function[3].items():
+				pureKey = key[key.find("param")+6:]
+				if key == "description":
+					mainDescription.setLineEditValue(value)
+				elif key == "return":
+					returns.setLineEditValue(value)
+				elif key == "rtype":
+					rtype.setLineEditValue(value)
+				else:
+					for param in paramBoxes:
+						if re.findall("Parameter '(.*?)' ", param.getData()[0])[0] == pureKey:
+							if re.findall(f"Parameter '{pureKey}' (.*?):", param.getData()[0])[0] == "Use" and 'param' in key:
+								param.setLineEditValue(value)
+							elif re.findall(f"Parameter '{pureKey}' (.*?):", param.getData()[0])[0] == "Type" and 'type' in key:
+								param.setLineEditValue(value)
+
+			button.setStyleSheet("background-color: red")
 			button.clicked.connect(lambda checked, index=index: self.changeActiveFunction(index))
 			self.view.setCellWidget(index, 0, button)
 
@@ -123,7 +147,7 @@ class MainWindow(QMainWindow):
 					finalText += tabs() + "\"\"\"\n"
 					finalText += (tabs() + listOfItems.itemAt(0).getData()[1] + "\n") if listOfItems.itemAt(0).getData()[1] != "" else ""
 					i = 1
-					while(i < len(listOfItems)-2):
+					while i < len(listOfItems)-2:
 						finalText += (tabs() + ":param " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
 						i+=1
 						finalText += (tabs() + ":type " + self.getFunctionName(listOfItems.itemAt(i).getData()[0]) + ": " + listOfItems.itemAt(i).getData()[1] + "\n") if listOfItems.itemAt(i).getData()[1] != "" else ""
@@ -158,7 +182,25 @@ class MainWindow(QMainWindow):
 		for i in range(len(text.split("\n"))):
 			line = text.split("\n")[i]
 			if re.findall("def (.*?)[(]", line):
-				functions.append([i + 1, re.findall("def (.*?)[(]", line)[0], line])
+				if "\"\"\"" not in text.split("\n")[i+1]:
+					functions.append([i + 1, re.findall("def (.*?)[(]", line)[0], line, {}])
+				else:
+					data = {}
+					flag = False
+					for j in range(i+1, len(text.split("\n"))):
+						currentLine = text.split("\n")[j]
+						if "\"\"\"" in currentLine and flag:
+							break
+						elif not flag:
+							flag = True
+						if ":" not in currentLine and "\"\"\"" not in currentLine:
+							try:
+								data['description'] += "\n" + currentLine.replace("\t", "")
+							except KeyError:
+								data['description'] = currentLine.replace("\t", "")
+						else:
+							data[currentLine[currentLine.find(":")+1:currentLine.replace(':', '\u1321', 1).find(":")]] = currentLine[currentLine.replace(':', '\u1321', 1).find(':')+2:]
+					functions.append([i + 1, re.findall("def (.*?)[(]", line)[0], line, data])
 
 		return functions
 
